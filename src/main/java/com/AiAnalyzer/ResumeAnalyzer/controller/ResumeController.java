@@ -35,7 +35,9 @@ public class ResumeController {
 
         String resumeText = resumeService.extractText(file);
 
+        //return resumeAnalysisService.analyze1(resumeText);
         return resumeAnalysisService.analyze(resumeText);
+
     }
     }
 
