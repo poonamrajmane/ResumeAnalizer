@@ -4,10 +4,6 @@ import java.util.List;
 
 public class ResumeAnalysisResponse {
 
-
-
-
-
         /*private String analysis;
 
         public ResumeAnalysisResponse() {
@@ -27,27 +23,49 @@ public class ResumeAnalysisResponse {
 
 
 
-    private int overallScore;
+    private Integer overallScore;
     private List<String> strengths;
     private List<String> weaknesses;
     private List<String> missingSkills;
     private List<String> interviewQuestions;
     private List<String> suggestions;
 
-    public ResumeAnalysisResponse(int overallScore, List<String> strengths, List<String> weaknesses, List<String> missingSkills, List<String> interviewQuestions, List<String> suggestions) {
+    private ScoreBreakdown scoreBreakdown;
+
+    private String explanation;
+
+    public ResumeAnalysisResponse(Integer overallScore, List<String> strengths, List<String> weaknesses, List<String> missingSkills, List<String> interviewQuestions, List<String> suggestions, ScoreBreakdown scoreBreakdown, String explanation) {
         this.overallScore = overallScore;
         this.strengths = strengths;
         this.weaknesses = weaknesses;
         this.missingSkills = missingSkills;
         this.interviewQuestions = interviewQuestions;
         this.suggestions = suggestions;
+        this.scoreBreakdown = scoreBreakdown;
+        this.explanation = explanation;
     }
 
-    public int getOverallScore() {
+    public ScoreBreakdown getScoreBreakdown() {
+        return scoreBreakdown;
+    }
+
+    public void setScoreBreakdown(ScoreBreakdown scoreBreakdown) {
+        this.scoreBreakdown = scoreBreakdown;
+    }
+
+    public String getExplanation() {
+        return explanation;
+    }
+
+    public void setExplanation(String explanation) {
+        this.explanation = explanation;
+    }
+
+    public Integer getOverallScore() {
         return overallScore;
     }
 
-    public void setOverallScore(int overallScore) {
+    public void setOverallScore(Integer overallScore) {
         this.overallScore = overallScore;
     }
 

@@ -3,6 +3,7 @@ package com.AiAnalyzer.ResumeAnalyzer.service;
 
 
 import com.AiAnalyzer.ResumeAnalyzer.dto.ResumeAnalysisResponse;
+import com.AiAnalyzer.ResumeAnalyzer.dto.ScoreBreakdown;
 import com.AiAnalyzer.ResumeAnalyzer.helper.ResumeSections;
 
 import org.springframework.stereotype.Service;
@@ -20,16 +21,20 @@ public class ResumeAnalysisService {
 
     private final SkillExtractor skillExtractor;
 
+    private final ResumeScoreCalculator scoreCalculator;
+
+
    /* public ResumeAnalysisService(ChatClient.Builder builder) {
         this.chatClient = builder.build();
     }*/
 
     private final ObjectMapper objectMapper;
 
-    public ResumeAnalysisService(ChatClient.Builder builder, ResumeSectionExtractor sectionExtractor, SkillExtractor skillExtractor, ObjectMapper objectMapper) {
+    public ResumeAnalysisService(ChatClient.Builder builder, ResumeSectionExtractor sectionExtractor, SkillExtractor skillExtractor, ResumeScoreCalculator scoreCalculator, ObjectMapper objectMapper) {
         this.chatClient = builder.build();
         this.sectionExtractor = sectionExtractor;
         this.skillExtractor = skillExtractor;
+        this.scoreCalculator = scoreCalculator;
         this.objectMapper = objectMapper;
     }
 
@@ -122,6 +127,8 @@ return prompt;
         // 2. Extract deterministic skills
         List<String> skills = skillExtractor.extractSkills(resumeText);
 
+
+
         // 3. AI evaluation only
         String prompt = buildPrompt(sections, skills);
 
@@ -171,6 +178,93 @@ return prompt;
                 sections.getEducation()
         );
     }
+
+
+
+
+
+
+    public ResumeAnalysisResponse analyzewithscorecalculator(String resumeText) {
+
+
+        // 1. Extract sections
+        ResumeSections sections =
+                sectionExtractor.extract(resumeText);
+
+
+        // 2. Extract known skills
+        List<String> skills =
+                skillExtractor.extractSkills(resumeText);
+
+
+        // 3. Generate backend score
+        ScoreBreakdown score =
+                scoreCalculator.calculate(
+                        sections,
+                        skills
+                );
+
+
+        Integer overallScore =
+                scoreCalculator.calculateOverallScore(score);
+
+
+
+        // 4. Send evaluation request to AI
+
+        String prompt = """
+    You are a technical recruiter.
+
+    Candidate score:
+    %s
+
+    Score breakdown:
+    Skills: %s
+    Experience: %s
+    Projects: %s
+    Education: %s
+
+
+    Resume:
+
+    %s
+
+
+    Provide:
+    - strengths
+    - weaknesses
+    - missing skills
+    - interview questions
+    - improvement suggestions
+
+    Do not calculate score.
+    """.formatted(
+                overallScore,
+                score.getSkills(),
+                score.getExperience(),
+                score.getProjects(),
+                score.getEducation(),
+                resumeText
+        );
+
+
+        ResumeAnalysisResponse response =
+                chatClient.prompt()
+                        .user(prompt)
+                        .call()
+                        .entity(ResumeAnalysisResponse.class);
+
+
+        // 5. Attach calculated score
+
+       response.setOverallScore(overallScore);
+       response.setScoreBreakdown(score);
+
+
+        return response;
+    }
+
+
 
 }
 
