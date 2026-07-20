@@ -8,7 +8,9 @@ import com.AiAnalyzer.ResumeAnalyzer.helper.ResumeSections;
 
 import org.springframework.stereotype.Service;
 import org.springframework.ai.chat.client.ChatClient;
-import tools.jackson.databind.ObjectMapper;
+
+
+//import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
@@ -23,19 +25,21 @@ public class ResumeAnalysisService {
 
     private final ResumeScoreCalculator scoreCalculator;
 
+    private final ResumeVectorService resumeVectorService;
 
    /* public ResumeAnalysisService(ChatClient.Builder builder) {
         this.chatClient = builder.build();
     }*/
 
-    private final ObjectMapper objectMapper;
+   // private final ObjectMapper objectMapper;
 
-    public ResumeAnalysisService(ChatClient.Builder builder, ResumeSectionExtractor sectionExtractor, SkillExtractor skillExtractor, ResumeScoreCalculator scoreCalculator, ObjectMapper objectMapper) {
+    public ResumeAnalysisService(ChatClient.Builder builder, ResumeSectionExtractor sectionExtractor, SkillExtractor skillExtractor, ResumeScoreCalculator scoreCalculator, ResumeVectorService resumeVectorService) {
         this.chatClient = builder.build();
         this.sectionExtractor = sectionExtractor;
         this.skillExtractor = skillExtractor;
         this.scoreCalculator = scoreCalculator;
-        this.objectMapper = objectMapper;
+      //  this.objectMapper = objectMapper;
+        this.resumeVectorService = resumeVectorService;
     }
 
 
@@ -124,6 +128,7 @@ return prompt;
 
         ResumeSections sections = sectionExtractor.extract(resumeText);
 
+
         // 2. Extract deterministic skills
         List<String> skills = skillExtractor.extractSkills(resumeText);
 
@@ -190,6 +195,8 @@ return prompt;
         // 1. Extract sections
         ResumeSections sections =
                 sectionExtractor.extract(resumeText);
+
+        resumeVectorService.storeResume(resumeText);
 
 
         // 2. Extract known skills

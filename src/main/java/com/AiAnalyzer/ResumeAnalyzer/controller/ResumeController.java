@@ -4,6 +4,7 @@ import com.AiAnalyzer.ResumeAnalyzer.dto.ResumeAnalysisResponse;
 import com.AiAnalyzer.ResumeAnalyzer.service.ResumeAnalysisService;
 import com.AiAnalyzer.ResumeAnalyzer.service.ResumeService;
 
+import com.AiAnalyzer.ResumeAnalyzer.service.ResumeVectorService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,10 +18,13 @@ public class ResumeController {
 
         private final ResumeService resumeService;
         private final ResumeAnalysisService resumeAnalysisService;
+    private final ResumeVectorService resumeVectorService;
 
-    public ResumeController(ResumeService resumeService, ResumeAnalysisService resumeAnalysisService) {
+
+    public ResumeController(ResumeService resumeService, ResumeAnalysisService resumeAnalysisService, ResumeVectorService resumeVectorService) {
             this.resumeService = resumeService;
         this.resumeAnalysisService = resumeAnalysisService;
+        this.resumeVectorService = resumeVectorService;
     }
 
         @PostMapping("/upload")
@@ -40,6 +44,8 @@ public class ResumeController {
         return resumeAnalysisService.analyzewithscorecalculator(resumeText);
 
     }
+
+
     }
 
 

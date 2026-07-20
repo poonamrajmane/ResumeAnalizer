@@ -3,6 +3,7 @@ package com.AiAnalyzer.ResumeAnalyzer.controller;
 import com.AiAnalyzer.ResumeAnalyzer.dto.ResumeMatchResponse;
 import com.AiAnalyzer.ResumeAnalyzer.service.ResumeMatchService;
 import com.AiAnalyzer.ResumeAnalyzer.service.ResumeService;
+import com.AiAnalyzer.ResumeAnalyzer.service.ResumeVectorService;
 import com.AiAnalyzer.ResumeAnalyzer.service.SkillExtractor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,16 +21,19 @@ public class ResumeMatchController {
     private final ResumeService resumeService;
     private final SkillExtractor skillExtractor;
     private final ResumeMatchService resumeMatchService;
+    private final ResumeVectorService resumeVectorService;
+
 
 
     public ResumeMatchController(
             ResumeService resumeService,
             SkillExtractor skillExtractor,
-            ResumeMatchService resumeMatchService) {
+            ResumeMatchService resumeMatchService, ResumeVectorService resumeVectorService) {
 
         this.resumeService = resumeService;
         this.skillExtractor = skillExtractor;
         this.resumeMatchService = resumeMatchService;
+        this.resumeVectorService = resumeVectorService;
     }
 
 
@@ -42,6 +46,7 @@ public class ResumeMatchController {
         // 1. Extract resume text from PDF
         String resumeText =
                 resumeService.extractText(file);
+        resumeVectorService.storeResume(resumeText);
 
 
         // 2. Extract skills from resume

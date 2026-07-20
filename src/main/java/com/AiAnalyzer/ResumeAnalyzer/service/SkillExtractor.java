@@ -13,7 +13,20 @@ public class SkillExtractor {
 
         List<String> skills = new ArrayList<>();
 
-        List<String> knownSkills = List.of("java", "spring", "spring boot", "microservices", "docker", "kubernetes", "aws", "sql", "redis", "rest");
+        List<String> knownSkills = List.of(
+                "java",
+                "spring",
+                "spring boot",
+                "microservices",
+                "docker",
+                "kubernetes",
+                "aws",
+                "sql",
+                "redis",
+                "rest",
+                "kafka",
+                "rabbitmq"
+        );
 
         String lower = text.toLowerCase();
 
